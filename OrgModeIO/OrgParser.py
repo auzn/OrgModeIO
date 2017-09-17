@@ -1,10 +1,9 @@
 #-*-coding:utf-8-*-
-from io import StringIO
 import re
-import OrgNode
-import OrgDoc
-import OrgDateTime
 import logging
+from .OrgDoc import OrgParsedDoc
+from .OrgNode import OrgHeadLine
+from .OrgDateTime import OrgRange
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -19,10 +18,10 @@ class OrgParser(object):
         self._org_doc = org_doc
 
     def parse(self):
-        parsed_doc = OrgDoc.OrgParsedDoc()
+        parsed_doc = OrgParsedDoc()
         headline_parser = None
         current_node = None
-        root_node = OrgNode.OrgHeadLine.OrgHeadBuild().level(0).title('ROOT').build()
+        root_node = OrgHeadLine.OrgHeadBuild().level(0).title('ROOT').build()
         org_nodes = [{
             'level': 0,
             'lft': 0,
@@ -144,17 +143,17 @@ class HeadLineParser(object):
     _HEADLINE_TAG_PATTERN = re.compile('^(.*)\\s+:(\\S+):\\s*$')
     _HEADLINE_STATE_PATTERN = re.compile('^(TODO|CLOSED)(.*)')
     _PLAN_PATTERN = re.compile(
-        "(SCHEDULED:|CLOSED:|DEADLINE:) *" + OrgDateTime.OrgRange.ORG_DT_OR_RANGE_PATTERN.pattern)
+        "(SCHEDULED:|CLOSED:|DEADLINE:) *" + OrgRange.ORG_DT_OR_RANGE_PATTERN.pattern)
     _HEADLINE_PROPERTY_PATTERN = re.compile("^:([^:\\s]+):\\s+(.*)\\s*$")
     # TODO
     _LOGBOOK_PATTERN = re.compile(
-        '\s*- State\s\"(.*)?\"\s*from\s*\"(.*)?\"\s*' + OrgDateTime.OrgRange.ORG_DT_OR_RANGE_PATTERN.pattern)
+        '\s*- State\s\"(.*)?\"\s*from\s*\"(.*)?\"\s*' + OrgRange.ORG_DT_OR_RANGE_PATTERN.pattern)
 
     def __init__(self, state_pattern):
         self._HEADLINE_STATE_PATTERN = state_pattern
 
     def parse_headline(self, line):
-        hb = OrgNode.OrgHeadLine.OrgHeadBuild()
+        hb = OrgHeadLine.OrgHeadBuild()
         m = self._HEADLINE_PATTERN.search(line)
         head_str = ''
         if m:
@@ -187,13 +186,13 @@ class HeadLineParser(object):
                 time_str = t[1]
                 if time_key == 'SCHEDULED:':
                     org_node['head'].set_scheduled(
-                        OrgDateTime.OrgRange.parse(time_str))
+                        OrgRange.parse(time_str))
                 elif time_key == 'CLOSED:':
                     org_node['head'].set_closed(
-                        OrgDateTime.OrgRange.parse(time_str))
+                        OrgRange.parse(time_str))
                 elif time_key == 'DEADLINE:':
                     org_node['head'].set_deadline(
-                        OrgDateTime.OrgRange.parse(time_str))
+                        OrgRange.parse(time_str))
             found = True
         return found
 

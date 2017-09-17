@@ -4,7 +4,7 @@ This is a python library for parsing Emacs org-mode files and write to html or o
 """
 __author__ = 'auzn'
 __contact__ = 'auzn.cn@gmail.com'
-__version__ = '0.1'
+__version__ = '0.1.4'
 __homepage__ = 'https://github.com/auzn/OrgModeIO'
 __license__ = 'MIT'
 

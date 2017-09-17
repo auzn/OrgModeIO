@@ -1,7 +1,6 @@
 #+TITLE: Python OrgModeIO Readme 
-* Python OrgModeIO
 This is a python library for parsing Emacs org-mode files. 
-** Supported Feature
+* Supported Feature
 - [[http://orgmode.org/manual/In_002dbuffer-settings.html][in buffer settings]]
 #+BEGIN_SRC  org
 #+TITLE:
@@ -21,16 +20,16 @@ This is a python library for parsing Emacs org-mode files.
 - [[http://orgmode.org/manual/Dates-and-times.html#Dates-and-times][Dates and times]]
   + [X] [[http://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][Deadlines and scheduling]]
   + [ ] [[http://orgmode.org/manual/Clocking-work-time.html#Clocking-work-time][Clocking work time]]
-** Usage
+* install 
 #+BEGIN_SRC python
-import OrgDoc
-import OrgNode
-import OrgParser
-import OrgDateTime
-
+pip install OrgModeIO
+#+END_SRC
+* Usage
+#+BEGIN_SRC python
+import OrgModeIO
 f = open('TODO_Life.org','r',encoding='utf-8')
-doc = OrgDoc.OrgDocFile(f)
-parsed_file = OrgParser.OrgParser(doc).parse()
+doc = OrgModeIO.OrgDocFile(f)
+parser = OrgModeIO.OrgParser(doc).parse()
 f.close()
 # the nodes is implemented with nested set model https://en.wikipedia.org/wiki/Nested_set_model
 nodes = parsed_file.get_nodes()
