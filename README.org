@@ -1,0 +1,97 @@
+#+TITLE: Python OrgModeIO Readme 
+* Python OrgModeIO
+This is a python library for parsing Emacs org-mode files. 
+** Supported Feature
+- [[http://orgmode.org/manual/In_002dbuffer-settings.html][in buffer settings]]
+#+BEGIN_SRC  org
+#+TITLE:
+#+SEQ_TODO:
+#+TAGS:
+#+END_SRC
+- [[http://orgmode.org/manual/Headlines.html#Headlines][Headlines]]
+- [[http://orgmode.org/manual/TODO-items.htm][TODO items]]
+  + [X] [[http://orgmode.org/manual/Workflow-states.html#Workflow-states][TODO sequence]]
+  + [ ] [[http://orgmode.org/manual/TODO-types.html#TODO-types][TODO types]]
+  + [ ] [[http://orgmode.org/manual/Progress-logging.html#Progress-logging][Progress logging]]
+  + [X] [[http://orgmode.org/manual/Priorities.html#Priorities][Priorities]]
+  + [ ] [[http://orgmode.org/manual/Breaking-down-tasks.html#Breaking-down-tasks][Breaking down tasks]]
+  + [ ] [[http://orgmode.org/manual/Checkboxes.html#Checkboxes][Checkboxex]]
+- [[http://orgmode.org/manual/Tags.html#Tags][Simple Tags]]
+- [[http://orgmode.org/manual/Property-syntax.html#Property-syntax][Simple Property]]
+- [[http://orgmode.org/manual/Dates-and-times.html#Dates-and-times][Dates and times]]
+  + [X] [[http://orgmode.org/manual/Deadlines-and-scheduling.html#Deadlines-and-scheduling][Deadlines and scheduling]]
+  + [ ] [[http://orgmode.org/manual/Clocking-work-time.html#Clocking-work-time][Clocking work time]]
+** Usage
+#+BEGIN_SRC python
+import OrgDoc
+import OrgNode
+import OrgParser
+import OrgDateTime
+
+f = open('TODO_Life.org','r',encoding='utf-8')
+doc = OrgDoc.OrgDocFile(f)
+parsed_file = OrgParser.OrgParser(doc).parse()
+f.close()
+# the nodes is implemented with nested set model https://en.wikipedia.org/wiki/Nested_set_model
+nodes = parsed_file.get_nodes()
+for n in ns:
+    print(n)
+    #print('n['level']) 
+    #print(n['lft'])
+    #print(n['rgt'])
+#+END_SRC
+output:
+#+BEGIN_EXAMPLE
+{'level': 0, 'lft': 0, 'rgt': 41, 'head': <OrgNode.OrgHead object at 0x00000298C7FF4DD8>}
+{'level': 1, 'lft': 1, 'rgt': 2, 'head': <OrgNode.OrgHead object at 0x00000298C8018160>}
+{'level': 1, 'lft': 3, 'rgt': 14, 'head': <OrgNode.OrgHead object at 0x00000298C8018128>}
+{'level': 2, 'lft': 4, 'rgt': 13, 'head': <OrgNode.OrgHead object at 0x00000298C8018198>}
+{'level': 3, 'lft': 5, 'rgt': 6, 'head': <OrgNode.OrgHead object at 0x00000298C8018208>}
+{'level': 3, 'lft': 7, 'rgt': 8, 'head': <OrgNode.OrgHead object at 0x00000298C8018278>}
+{'level': 3, 'lft': 9, 'rgt': 10, 'head': <OrgNode.OrgHead object at 0x00000298C8018438>}
+{'level': 3, 'lft': 11, 'rgt': 12, 'head': <OrgNode.OrgHead object at 0x00000298C80184A8>}
+{'level': 1, 'lft': 15, 'rgt': 16, 'head': <OrgNode.OrgHead object at 0x00000298C8018710>}
+{'level': 1, 'lft': 17, 'rgt': 40, 'head': <OrgNode.OrgHead object at 0x00000298C80184E0>}
+#+END_EXAMPLE
+\\
+#+BEGIN_SRC python
+root = ns[0]['head']
+print(root.get_title())
+print(root.get_level())
+#+END_SRC
+output:
+#+BEGIN_EXAMPLE
+ROOT
+0
+#+END_EXAMPLE
+\\
+#+BEGIN_SRC python
+node = ns[18]['head']
+print(node)
+print('================================================')
+print('level:' + str(node.get_level()))
+print('state:' + node.get_state())
+print('priority:' + node.get_priority())
+print('title:' + node.get_title())
+print('deadline:' + str(node.get_deadline()))
+print('closed time:' + str(node.get_closed()))
+print('scheduled:' + str(node.get_scheduled()))
+print('property list:' + str(node.get_properties()))
+print('content:' + node.get_content())
+#+END_SRC
+output:
+#+BEGIN_EXAMPLE
+ ***** DONE [#B] some thing  needs to be done 
+ CLOSED:[2017-08-27 21:02] DEADLINE:<2017-08-20 00:00>
+ ================================================
+ level:5
+ state:DONE
+ priority:B
+ title:some thing  needs to be done
+ deadline:<2017-08-20 00:00>
+ closed time:[2017-08-27 21:02]
+ scheduled:None
+ property list:None
+ content:
+
+#+END_EXAMPLE
